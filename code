@@ -1,0 +1,139 @@
+#include <stdio.h>
+
+// Function to calculate weighted accuracy from three quarters
+float accuracy(){
+    float a1, a2, a3;
+    printf("Enter values of accuracies 1, 2, 3 quarters (where 3 is the latest quarter) respectively:");
+    scanf("%f %f %f", &a1, &a2, &a3);
+    float x = 0.5*a3 + 0.3*a2 + 0.2*a1;  // Weighted average, giving more weight to the latest quarter
+    return x;
+}
+
+// Function to find the two largest accuracy values and their positions (1, 2, or 3)
+void findTwoLargest(float a, float b, float c, float *largest, float *secondLargest, int *posLargest, int *posSecondLargest) {
+    if (a > b) {
+        if (a > c) {
+            *largest = a;
+            *posLargest = 1;
+            if (b > c) {
+                *secondLargest = b;
+                *posSecondLargest = 2;
+            } else {
+                *secondLargest = c;
+                *posSecondLargest = 3;
+            }
+        } else {
+            *largest = c;
+            *posLargest = 3;
+            *secondLargest = a;
+            *posSecondLargest = 1;
+        }
+    } else {
+        if (b > c) {
+            *largest = b;
+            *posLargest = 2;
+            if (a > c) {
+                *secondLargest = a;
+                *posSecondLargest = 1;
+            } else {
+                *secondLargest = c;
+                *posSecondLargest = 3;
+            }
+        } else {
+            *largest = c;
+            *posLargest = 3;
+            *secondLargest = b;
+            *posSecondLargest = 2;
+        }
+    }
+}
+
+// Function to calculate bias based on pattern of values
+float bias(float a, float b, float c) {
+    // Checks for linear pattern
+    if((b - a) == (c - b)){
+        float x = c + (c-b) + (b-a)/2;
+        return x; // Return linear bias value
+    } else {
+        float y = 0.5*c + 0.3*b + 0.2*a;
+        printf("\n Bias=%f", &y); // Weighted average bias for non-linear pattern
+        // Note: 'return y;' is commented out (likely an error)
+    }
+}
+
+// Function to get team name by position of largest accuracy
+const char* team(int posl){
+    if(posl == 1){
+        return "demand team"; 
+    }
+    else if(posl == 2){
+        return "marketing team"; 
+    }
+    else{
+        return "stat ml team"; 
+    }
+}
+
+// Same as team(), used for second largest
+const char* team2(int possecl){
+    if(possecl == 1){
+        return "demand team"; 
+    }
+    else if(possecl == 2){
+        return "marketing team"; 
+    }
+    else{
+        return "stat ml team"; 
+    }
+}
+
+int main() {
+    // Read weighted accuracies for demand, marketing, and stat ML teams
+    float d, m, s;
+    d = accuracy();
+    m = accuracy();
+    s = accuracy();
+    
+    // Identify top two teams by accuracy
+    float l, sl; 
+    int posl, possecl;
+    findTwoLargest(d, m, s, &l, &sl, &posl, &possecl);
+   
+    printf("The two largest accuracies are: %f (position %d) and %f (position %d)\n", l, posl, sl, possecl);
+    
+    // Bias calculation for the top team
+    float x, y, z;
+    printf("Enter bias values (enter by highest accuracy) for %s: ", team(posl));
+    scanf("%f %f %f", &x, &y, &z);
+    float b1 = bias(x, y, z);
+    
+    // Bias calculation for the second-best team
+    printf("Enter bias values (enter by highest accuracy) for %s: ", team2(possecl));
+    scanf("%f %f %f", &x, &y, &z);
+    float b2 = bias(x, y, z);
+    
+    // Forecast inputs from both top teams
+    float f1, f2;
+    printf("Enter forecast values for both teams: ");
+    scanf("%f %f", &f1, &f2);
+    
+    // Forecast decision logic based on bias sign
+    float forecast;
+    if((b1 > 0 && b2 < 0) || (b2 > 0 && b1 < 0)){
+        // Mixed biases: take average forecast
+        forecast = (f1 + f2)/2; 
+    } 
+    else {
+        // Same direction: adjust forecast based on bias percentage
+        if(b1 > 0){
+            forecast = f1 - (b1 * f1)/100;
+        } else {
+            forecast = f1 + (b1 * f1)/100;  
+        }
+    }
+
+    // Output final forecast
+    printf("forecast = %f", forecast);
+    
+    return 0;
+}
