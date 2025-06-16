@@ -6,7 +6,7 @@ Here’s a structured answer addressing your questions about the C-based forecas
 
 What the project does?
 
-This project takes accuracy and bias data from three forecasting teams (Demand, Marketing, and Statistical/ML) over three quarters. It calculates weighted accuracy, identifies the two most reliable teams, evaluates the trend of their biases, and combines their forecasts to produce a more accurate and reliable final forecast.
+This project takes accuracy and bias data from three forecasting teams (Demand, Marketing, and Statistical or ML) over three quarters. It calculates weighted accuracy, identifies the two most reliable teams, evaluates the trend of their biases, and combines their forecasts to produce a more accurate and reliable final forecast.
 
 ---
 
